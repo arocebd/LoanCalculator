@@ -307,43 +307,123 @@
         }
 
        /* ---------- Responsive tweaks ---------- */
-@media (min-width: 768px) {
-    .content {
-        flex-direction: row;
+/* Mobile Responsive Fixes */
+@media (max-width: 600px) {
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
     }
-    .form-section {
-        flex: 1;
-        border-right: 1px solid #eee;
+    
+    .section-header h3 {
+        font-size: 16px;
+        margin: 0;
+        width: 100%;
     }
-    .results-section {
-        flex: 1;
-        background: #f9fafc;
+    
+    .add-button {
+        align-self: center;
+        width: 100%;
+        max-width: 120px;
+        font-size: 14px;
+        padding: 10px 14px;
+        margin: 0;
+        order: 2; /* Ensure button appears below the title */
     }
-    .header h1 {
-        font-size: 26px;
+    
+    /* Additional mobile fixes for other elements */
+    .card {
+        padding: 15px;
     }
-    .header p {
+    
+    .input-group input, .input-group select {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .rate-period, .repayment {
+        padding: 12px;
+    }
+    
+    .rate-period-header, .repayment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .btn {
+        padding: 14px;
         font-size: 15px;
     }
-    .add-button {
-        align-self: flex-end;
-        font-size: 13px;
-        padding: 8px 12px;
+    
+    .result-value {
+        font-size: 16px;
+    }
+    
+    .container {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+    
+    .content {
+        flex-direction: column;
+    }
+    
+    .form-section, .results-section {
+        min-width: 100%;
+        padding: 15px;
+    }
+    
+    .form-section {
+        border-right: none;
+        border-bottom: 1px solid #eee;
+    }
+    
+    /* Fix for text overflow in rate table */
+    .rate-table th, .rate-table td {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    /* Ensure no horizontal scrolling */
+    body {
+        overflow-x: hidden;
+    }
+    
+    /* Better spacing for mobile */
+    .card-title {
+        font-size: 16px;
+        margin-bottom: 12px;
     }
 }
 
-@media (min-width: 992px) {
+/* Additional fix for very small devices */
+@media (max-width: 400px) {
     .header h1 {
-        font-size: 30px;
+        font-size: 22px;
     }
+    
     .header p {
-        font-size: 16px;
+        font-size: 14px;
     }
-    .card-title {
-        font-size: 18px;
+    
+    .add-button {
+        font-size: 13px;
+        padding: 8px 12px;
     }
-    .result-item {
-        font-size: 15px;
+    
+    .tab {
+        padding: 12px;
+        font-size: 13px;
+    }
+}
+
+/* Fix for iOS Safari specific issues */
+@supports (-webkit-touch-callout: none) {
+    @media (max-width: 600px) {
+        .input-group input, .input-group select {
+            font-size: 16px; /* Prevents zoom on focus in iOS */
+        }
     }
 }
         .info-text {
@@ -962,5 +1042,6 @@
     </script>
 </body>
 </html>
+
 
 
