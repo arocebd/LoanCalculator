@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #fca311;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 6s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .form-section {
+            flex: 1;
+            min-width: 350px;
+            padding: 25px;
+            border-right: 1px solid #eee;
+        }
+
+        .results-section {
+            flex: 1;
+            min-width: 350px;
+            padding: 25px;
+            background: #f9fafc;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eaeaea;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eaeaea;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .rate-periods, .repayments {
+            margin-top: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-header h3 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .add-button:hover {
+            background: #3aa5d5;
+        }
+
+        .rate-period, .repayment {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            position: relative;
+            border-left: 4px solid var(--primary);
+        }
+
+        .rate-period-header, .repayment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .remove-btn {
+            color: var(--danger);
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .remove-btn:hover {
+            background: rgba(247, 37, 133, 0.1);
+        }
+
+        .results {
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .results h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: var(--gray);
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .highlight .result-label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .highlight .result-value {
+            color: white;
+            font-size: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
+
+        .info-text {
+            background: #e9f7ff;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #0066cc;
+            border-left: 4px solid #0066cc;
+        }
+
+        .rate-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .rate-table th, .rate-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rate-table th {
+            background-color: #f8f9ff;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .rate-table tr:hover {
+            background-color: #f1f5ff;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .footer {
+            color: white;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .info-badge {
+            background: var(--warning);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .calculation-breakdown {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .breakdown-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calculator"></i> Loan Calculator</h1>
+            <p>Calculate loan interest with manual and default rate periods</p>
+        </div>
+        
+        <div class="content">
+            <div class="form-section">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-info-circle"></i> Loan Details
+                    </div>
+                    <div class="input-group">
+                        <label for="loanAmount">Loan Amount (Taka)</label>
+                        <input type="number" id="loanAmount" placeholder="Enter loan amount" value="100">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="disbursementDate">Disbursement Date</label>
+                        <input type="date" id="disbursementDate">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="calculationDate">Calculation Date</label>
+                        <input type="date" id="calculationDate">
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-chart-line"></i> Manual Interest Rate Periods 
+                            <span class="info-badge">For ACD/Ghorefera/FID loan calculation</span>
+                        </h3>
+                        <button class="add-button" id="addRatePeriod">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    </div>
+                    <div class="info-text">
+                        <i class="fas fa-info-circle"></i> Add your custom rate period. The system will automatically use default rates for any remaining period.
+                    </div>
+                    <div id="ratePeriodsContainer">
+                        <!-- Manual rate periods will be added here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-money-bill-wave"></i> Partial Repayments</h3>
+                        <button class="add-button" id="addRepayment">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    </div>
+                    <div id="repaymentsContainer">
+                        <!-- Repayments will be added here -->
+                    </div>
+                </div>
+                
+                <button class="btn" id="calculateBtn">
+                    <i class="fas fa-calculator"></i> Calculate Loan
+                </button>
+                <button class="btn btn-secondary" id="clearBtn">
+                    <i class="fas fa-eraser"></i> Clear All
+                </button>
+            </div>
+            
+            <div class="results-section">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-chart-pie"></i> Calculation Results
+                    </div>
+                    <div class="results">
+                        <div class="result-item">
+                            <span class="result-label">Outstanding Balance:</span>
+                            <span class="result-value" id="outstandingBalance">0.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Total Interest:</span>
+                            <span class="result-value" id="totalInterest">0.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Total Repaid:</span>
+                            <span class="result-value" id="totalRepaid">0.00</span>
+                        </div>
+                        <div class="result-item highlight">
+                            <span class="result-label">Total Amount Payable:</span>
+                            <span class="result-value" id="totalPayable">0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-clock"></i> Calculation Period
+                    </div>
+                    <div class="results">
+                        <div class="result-item">
+                            <span class="result-label">From:</span>
+                            <span class="result-value" id="fromDate">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">To:</span>
+                            <span class="result-value" id="toDate">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Days:</span>
+                            <span class="result-value" id="daysCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-list"></i> Rate Periods Used
+                    </div>
+                    <div class="results" id="ratesUsed">
+                        <div class="result-item">
+                            <span class="result-label">No calculation performed yet</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-calculator"></i> Interest Calculation Breakdown
+                    </div>
+                    <div class="results" id="calculationBreakdown">
+                        <div class="result-item">
+                            <span class="result-label">No calculation performed yet</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Developed by <a href="https://www.facebook.com/na.ima.ahameda.943260" target="_blank">Nayem Ahmed</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+           // Set default dates
+                const today = new Date();
+                const formattedDate = today.toISOString().split('T')[0];
+                const oneYearFromNow = new Date(today);
+                oneYearFromNow.setFullYear(today.getFullYear() + 1);
+                const formattedFutureDate = oneYearFromNow.toISOString().split('T')[0];
+
+            document.getElementById('disbursementDate').value = formattedDate;
+            document.getElementById('calculationDate').value = formattedFutureDate;
+            // Predefined interest rate periods
+           const defaultRatePeriods = [
+                { start: "1900-01-01", end: "2021-03-30", rate: 0.09 },
+                { start: "2021-03-31", end: "2023-06-30", rate: 0.08 },
+                { start: "2023-07-01", end: "2023-07-05", rate: 0.0911 },
+                { start: "2023-07-06", end: "2023-10-09", rate: 0.0970 },
+                { start: "2023-10-10", end: "2023-11-14", rate: 0.0930 },
+                { start: "2023-11-15", end: "2023-11-27", rate: 0.1018 },
+                { start: "2023-11-28", end: "2023-12-03", rate: 0.1047 },
+                { start: "2023-12-04", end: "2024-01-01", rate: 0.1089 },
+                { start: "2024-01-02", end: "2024-02-01", rate: 0.1143 },
+                { start: "2024-02-02", end: "2024-04-01", rate: 0.1255 },
+                { start: "2024-04-02", end: "2025-03-31", rate: 0.12 },
+                { start: "2025-04-01", end: document.getElementById('calculationDate').value, rate: 0.125 } // Use a fixed future date
+                ];
+            
+            // Add rate period button
+            document.getElementById('addRatePeriod').addEventListener('click', function() {
+                const ratePeriodsContainer = document.getElementById('ratePeriodsContainer');
+                const periodCount = ratePeriodsContainer.children.length + 1;
+                
+                const ratePeriodHTML = `
+                    <div class="rate-period">
+                        <div class="rate-period-header">
+                            <span>Period ${periodCount}</span>
+                            <button class="remove-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="input-group">
+                            <label>Start Date</label>
+                            <input type="date" class="rate-start-date" value="${formattedDate}">
+                        </div>
+                        <div class="input-group">
+                            <label>End Date</label>
+                            <input type="date" class="rate-end-date" value="${formattedFutureDate}">
+                        </div>
+                        <div class="input-group">
+                            <label>Annual Interest Rate (%)</label>
+                            <input type="number" class="interest-rate" placeholder="Enter interest rate" value="4.0" step="0.1">
+                        </div>
+                    </div>
+                `;
+                
+                ratePeriodsContainer.insertAdjacentHTML('beforeend', ratePeriodHTML);
+                
+                // Add event listener to the remove button
+                const removeButtons = ratePeriodsContainer.querySelectorAll('.remove-btn');
+                removeButtons[removeButtons.length - 1].addEventListener('click', function() {
+                    this.closest('.rate-period').remove();
+                    // Update period numbers
+                    updatePeriodNumbers();
+                });
+            });
+            
+            // Add repayment button
+            document.getElementById('addRepayment').addEventListener('click', function() {
+                const repaymentsContainer = document.getElementById('repaymentsContainer');
+                const repaymentCount = repaymentsContainer.children.length + 1;
+                
+                const repaymentHTML = `
+                    <div class="repayment">
+                        <div class="repayment-header">
+                            <span>Repayment ${repaymentCount}</span>
+                            <button class="remove-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="input-group">
+                            <label>Repayment Date</label>
+                            <input type="date" class="repayment-date" value="${formattedDate}">
+                        </div>
+                        <div class="input-group">
+                            <label>Amount Repaid (Taka)</label>
+                            <input type="number" class="repayment-amount" placeholder="Enter repayment amount" value="0">
+                        </div>
+                    </div>
+                `;
+                
+                repaymentsContainer.insertAdjacentHTML('beforeend', repaymentHTML);
+                
+                // Add event listener to the remove button
+                const removeButtons = repaymentsContainer.querySelectorAll('.remove-btn');
+                removeButtons[removeButtons.length - 1].addEventListener('click', function() {
+                    this.closest('.repayment').remove();
+                    // Update repayment numbers
+                    updateRepaymentNumbers();
+                });
+            });
+            
+            // Calculate button
+            document.getElementById('calculateBtn').addEventListener('click', calculateLoan);
+            
+            // Clear button
+            document.getElementById('clearBtn').addEventListener('click', clearAll);
+            
+            // Function to update period numbers
+            function updatePeriodNumbers() {
+                const ratePeriods = document.querySelectorAll('.rate-period');
+                ratePeriods.forEach((period, index) => {
+                    period.querySelector('.rate-period-header span').textContent = `Period ${index + 1}`;
+                });
+            }
+            
+            // Function to update repayment numbers
+            function updateRepaymentNumbers() {
+                const repayments = document.querySelectorAll('.repayment');
+                repayments.forEach((repayment, index) => {
+                    repayment.querySelector('.repayment-header span').textContent = `Repayment ${index + 1}`;
+                });
+            }
+            
+            // Format date for display
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+            
+            // Calculate loan function
+            function calculateLoan() {
+                const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+                const disbursementDate = new Date(document.getElementById('disbursementDate').value);
+                const calculationDate = new Date(document.getElementById('calculationDate').value);
+                
+                // Get manual rate periods
+                let manualRatePeriods = [];
+                const rateElements = document.querySelectorAll('.rate-period');
+                
+                rateElements.forEach(period => {
+                    const startDate = new Date(period.querySelector('.rate-start-date').value);
+                    const endDate = new Date(period.querySelector('.rate-end-date').value);
+                    const interestRate = parseFloat(period.querySelector('.interest-rate').value) / 100;
+                    
+                    manualRatePeriods.push({
+                        startDate: startDate,
+                        endDate: endDate,
+                        annualRate: interestRate,
+                        isManual: true
+                    });
+                });
+                
+                // Get all repayments
+                const repayments = [];
+                const repaymentElements = document.querySelectorAll('.repayment');
+                
+                repaymentElements.forEach(repayment => {
+                    const repaymentDate = new Date(repayment.querySelector('.repayment-date').value);
+                    const repaymentAmount = parseFloat(repayment.querySelector('.repayment-amount').value);
+                    
+                    repayments.push({
+                        date: repaymentDate,
+                        amount: repaymentAmount
+                    });
+                });
+                
+                // Sort repayments by date
+                repayments.sort((a, b) => a.date - b.date);
+                
+                // Calculate interest
+                let outstanding = loanAmount;
+                let totalInterest = 0;
+                let ratesUsed = [];
+                let calculationBreakdown = [];
+                
+                // Create events array (disbursement + repayments)
+                const events = [{ date: disbursementDate, amount: loanAmount, isRepayment: false }];
+                repayments.forEach(repayment => {
+                    events.push({ date: repayment.date, amount: repayment.amount, isRepayment: true });
+                });
+                events.push({ date: calculationDate, amount: 0, isRepayment: false }); // Add calculation date as final event
+                
+                // Sort events by date
+                events.sort((a, b) => a.date - b.date);
+                
+                // Process each period between events
+                for (let i = 0; i < events.length - 1; i++) {
+                    const startDate = events[i].date;
+                    const endDate = events[i+1].date;
+                    
+                    // Apply repayment if it's a repayment event
+                    if (events[i].isRepayment) {
+                        outstanding -= events[i].amount;
+                        if (outstanding < 0) outstanding = 0;
+                    }
+                    
+                    // Calculate interest for this period
+                    let tempDate = new Date(startDate);
+                    let periodInterest = 0;
+                    let periodBreakdown = [];
+                    
+                    while (tempDate < endDate) {
+                        // Find the applicable rate period (manual rates take priority)
+                        let ratePeriod = manualRatePeriods.find(period => 
+                            tempDate >= period.startDate && tempDate <= period.endDate
+                        );
+                        
+                        // If no manual rate found, try default rates
+                        if (!ratePeriod) {
+                            ratePeriod = defaultRatePeriods.find(period => 
+                                tempDate >= new Date(period.start) && tempDate <= new Date(period.end)
+                            );
+                            
+                            if (ratePeriod) {
+                                ratePeriod = {
+                                    startDate: new Date(ratePeriod.start),
+                                    endDate: new Date(ratePeriod.end),
+                                    annualRate: ratePeriod.rate,
+                                    isManual: false
+                                };
+                            }
+                        }
+                        
+                        if (!ratePeriod) {
+                            // No rate period found, move to next day
+                            tempDate.setDate(tempDate.getDate() + 1);
+                            continue;
+                        }
+                        
+                        // Track which rate periods were used
+                        if (!ratesUsed.some(r => r.startDate.getTime() === ratePeriod.startDate.getTime() && 
+                            r.endDate.getTime() === ratePeriod.endDate.getTime())) {
+                            ratesUsed.push({...ratePeriod});
+                        }
+                        
+                        // Determine the end of the calculation period
+                        const periodEndDate = new Date(Math.min(
+                            endDate,
+                            ratePeriod.endDate
+                        ));
+                        
+                        // Calculate days in this period
+                        const days = Math.ceil((periodEndDate - tempDate) / (1000 * 60 * 60 * 24)) + 1;
+                        
+                        // Calculate interest for these days
+                        const dailyRate = ratePeriod.annualRate / 365; // Using 365 days per year
+                        const interestAmount = outstanding * dailyRate * days;
+                        periodInterest += interestAmount;
+                        
+                        // Add to breakdown
+                        periodBreakdown.push({
+                            startDate: new Date(tempDate),
+                            endDate: new Date(periodEndDate),
+                            days: days,
+                            rate: ratePeriod.annualRate,
+                            amount: interestAmount,
+                            isManual: ratePeriod.isManual
+                        });
+                        
+                        // Move to the next period
+                        tempDate = new Date(periodEndDate);
+                        tempDate.setDate(tempDate.getDate() + 1);
+                    }
+                    
+                    totalInterest += periodInterest;
+                    
+                    // Add to calculation breakdown
+                    calculationBreakdown.push({
+                        period: `${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`,
+                        interest: periodInterest,
+                        breakdown: periodBreakdown
+                    });
+                    
+                    // Update outstanding balance with interest
+                    outstanding += periodInterest;
+                }
+                
+                // Calculate total repaid
+                const totalRepaid = repayments.reduce((sum, repayment) => sum + repayment.amount, 0);
+                const totalPayable = loanAmount + totalInterest;
+                
+                // Update results
+                document.getElementById('outstandingBalance').textContent = `${outstanding.toFixed(2)} Taka`;
+                document.getElementById('totalInterest').textContent = `${totalInterest.toFixed(2)} Taka`;
+                document.getElementById('totalRepaid').textContent = `${totalRepaid.toFixed(2)} Taka`;
+                document.getElementById('totalPayable').textContent = `${totalPayable.toFixed(2)} Taka`;
+
+                // Update dates
+                document.getElementById('fromDate').textContent = disbursementDate.toLocaleDateString();
+                document.getElementById('toDate').textContent = calculationDate.toLocaleDateString();
+                
+                // Calculate days between disbursement and calculation date
+                const daysDiff = Math.ceil((calculationDate - disbursementDate) / (1000 * 60 * 60 * 24));
+                document.getElementById('daysCount').textContent = `${daysDiff} days`;
+                
+                // Display rates used
+                const ratesUsedContainer = document.getElementById('ratesUsed');
+                ratesUsedContainer.innerHTML = '';
+                
+                if (ratesUsed.length === 0) {
+                    ratesUsedContainer.innerHTML = '<div class="result-item"><span class="result-label">No rates applied</span></div>';
+                } else {
+                    // Sort rates by start date
+                    ratesUsed.sort((a, b) => a.startDate - b.startDate);
+                    
+                    ratesUsed.forEach(rate => {
+                        const rateItem = document.createElement('div');
+                        rateItem.className = 'result-item';
+                        const rateType = rate.isManual ? ' (Manual)' : ' (Default)';
+                        rateItem.innerHTML = `
+                            <span class="result-label">${rate.startDate.toLocaleDateString()} to ${rate.endDate.toLocaleDateString()}${rateType}</span>
+                            <span class="result-value">${(rate.annualRate * 100).toFixed(2)}%</span>
+                        `;
+                        ratesUsedContainer.appendChild(rateItem);
+                    });
+                }
+                
+                // Display calculation breakdown
+                const breakdownContainer = document.getElementById('calculationBreakdown');
+                breakdownContainer.innerHTML = '';
+                
+                if (calculationBreakdown.length === 0) {
+                    breakdownContainer.innerHTML = '<div class="result-item"><span class="result-label">No calculation details</span></div>';
+                } else {
+                    calculationBreakdown.forEach(period => {
+                        const periodDiv = document.createElement('div');
+                        periodDiv.className = 'calculation-breakdown';
+                        
+                        let breakdownHTML = `
+                            <div class="breakdown-item">
+                                <strong>Period:</strong> <span>${period.period}</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <strong>Total Interest:</strong> <span>${period.interest.toFixed(2)} Taka</span>
+                            </div>
+                        `;
+                        
+                        period.breakdown.forEach(item => {
+                            breakdownHTML += `
+                                <div class="breakdown-item">
+                                    <span>${item.startDate.toLocaleDateString()} to ${item.endDate.toLocaleDateString()} (${item.days} days @ ${(item.rate * 100).toFixed(2)}%)</span>
+                                    <span>${item.amount.toFixed(2)} Taka</span>
+                                </div>
+                            `;
+                        });
+                        
+                        periodDiv.innerHTML = breakdownHTML;
+                        breakdownContainer.appendChild(periodDiv);
+                    });
+                }
+            }
+            
+            // Clear all function
+            function clearAll() {
+                // Reset loan details
+                document.getElementById('loanAmount').value = '100';
+                document.getElementById('disbursementDate').value = '2024-01-01';
+                document.getElementById('calculationDate').value = '2025-06-30';
+                
+                // Clear manual rate periods
+                document.getElementById('ratePeriodsContainer').innerHTML = '';
+                
+                // Clear all repayments
+                document.getElementById('repaymentsContainer').innerHTML = '';
+                
+                // Reset results
+                document.getElementById('outstandingBalance').textContent = '0.00';
+                document.getElementById('totalInterest').textContent = '0.00';
+                document.getElementById('totalRepaid').textContent = '0.00';
+                document.getElementById('totalPayable').textContent = '0.00';
+                document.getElementById('fromDate').textContent = '-';
+                document.getElementById('toDate').textContent = '-';
+                document.getElementById('daysCount').textContent = '0';
+                
+                // Reset rates used
+                document.getElementById('ratesUsed').innerHTML = '<div class="result-item"><span class="result-label">No calculation performed yet</span></div>';
+                
+                // Reset breakdown
+                document.getElementById('calculationBreakdown').innerHTML = '<div class="result-item"><span class="result-label">No calculation performed yet</span></div>';
+            }
+            
+            // Add initial rate period
+            document.getElementById('addRatePeriod').click();
+            
+            // Initial calculation on load
+            calculateLoan();
+        });
+    </script>
+</body>
+</html>
