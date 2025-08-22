@@ -306,17 +306,41 @@
             font-size: 20px;
         }
 
-        @media (max-width: 768px) {
-            .content {
-                flex-direction: column;
-            }
-            
-            .form-section {
-                border-right: none;
-                border-bottom: 1px solid #eee;
-            }
-        }
+       /* ---------- Responsive tweaks ---------- */
+@media (min-width: 768px) {
+    .content {
+        flex-direction: row;
+    }
+    .form-section {
+        flex: 1;
+        border-right: 1px solid #eee;
+    }
+    .results-section {
+        flex: 1;
+        background: #f9fafc;
+    }
+    .header h1 {
+        font-size: 26px;
+    }
+    .header p {
+        font-size: 15px;
+    }
+}
 
+@media (min-width: 992px) {
+    .header h1 {
+        font-size: 30px;
+    }
+    .header p {
+        font-size: 16px;
+    }
+    .card-title {
+        font-size: 18px;
+    }
+    .result-item {
+        font-size: 15px;
+    }
+}
         .info-text {
             background: #e9f7ff;
             padding: 15px;
@@ -933,3 +957,4 @@
     </script>
 </body>
 </html>
+
