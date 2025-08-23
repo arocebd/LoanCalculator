@@ -685,8 +685,10 @@
             // Add rate period button
             document.getElementById('addRatePeriod').addEventListener('click', function() {
                 const ratePeriodsContainer = document.getElementById('ratePeriodsContainer');
+                // Ensure container is visible when adding
+                ratePeriodsContainer.style.display = 'block';
                 const periodCount = ratePeriodsContainer.children.length + 1;
-                
+
                 const ratePeriodHTML = `
                     <div class="rate-period">
                         <div class="rate-period-header">
@@ -707,15 +709,20 @@
                         </div>
                     </div>
                 `;
-                
+
                 ratePeriodsContainer.insertAdjacentHTML('beforeend', ratePeriodHTML);
-                
-                // Add event listener to the remove button
-                const removeButtons = ratePeriodsContainer.querySelectorAll('.remove-btn');
-                removeButtons[removeButtons.length - 1].addEventListener('click', function() {
+
+                // Add event listener to the new remove button
+                const lastRemoveBtn = ratePeriodsContainer.querySelectorAll('.remove-btn');
+                const btn = lastRemoveBtn[lastRemoveBtn.length - 1];
+                btn.addEventListener('click', function() {
                     this.closest('.rate-period').remove();
                     // Update period numbers
                     updatePeriodNumbers();
+                    // Hide container if no periods left
+                    if (ratePeriodsContainer.children.length === 0) {
+                        ratePeriodsContainer.style.display = 'none';
+                    }
                 });
             });
             
@@ -1006,12 +1013,14 @@
             // Clear all function
             function clearAll() {
                 // Reset loan details
-                document.getElementById('loanAmount').value = '100';
-                document.getElementById('disbursementDate').value = '2024-01-01';
-                document.getElementById('calculationDate').value = '2025-06-30';
+                document.getElementById('loanAmount').value = '0';
+                document.getElementById('disbursementDate').value = '';
+                document.getElementById('calculationDate').value = '';
                 
                 // Clear manual rate periods
-                document.getElementById('ratePeriodsContainer').innerHTML = '';
+                const ratePeriodsContainer = document.getElementById('ratePeriodsContainer');
+                ratePeriodsContainer.innerHTML = '';
+                ratePeriodsContainer.style.display = 'none';
                 
                 // Clear all repayments
                 document.getElementById('repaymentsContainer').innerHTML = '';
@@ -1032,8 +1041,16 @@
                 document.getElementById('calculationBreakdown').innerHTML = '<div class="result-item"><span class="result-label">No calculation performed yet</span></div>';
             }
             
-            // Add initial rate period
-            document.getElementById('addRatePeriod').click();
+            // Hide rate periods container if empty on load
+            (function initRateContainer() {
+                const ratePeriodsContainer = document.getElementById('ratePeriodsContainer');
+                if (!ratePeriodsContainer) return;
+                if (ratePeriodsContainer.children.length === 0) {
+                    ratePeriodsContainer.style.display = 'none';
+                } else {
+                    ratePeriodsContainer.style.display = 'block';
+                }
+            })();
             
             // Initial calculation on load
             calculateLoan();
@@ -1041,7 +1058,6 @@
     </script>
 </body>
 </html>
-
 
 
 
