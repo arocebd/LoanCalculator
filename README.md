@@ -4,7 +4,7 @@ A responsive loan calculator web application with manual and default interest ra
 
 ## Live Demo
 
-🌐 **View the live application:** [https://arocebd.github.io/LoanCalculator/index.html](https://arocebd.github.io/LoanCalculato/index.html)
+🌐 **View the live application:** [https://arocebd.github.io/LoanCalculator/](https://arocebd.github.io/LoanCalculato/index.html)
 
 ## Features
 
