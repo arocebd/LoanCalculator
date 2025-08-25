@@ -784,7 +784,7 @@
             // Format date for display
             function formatDate(dateString) {
                 const date = new Date(dateString);
-                return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                return date.toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
             }
             
             // Calculate loan function
@@ -899,13 +899,23 @@
                             ratePeriod.endDate
                         ));
                         
-                        // Calculate days in this period
-                        const days = Math.ceil((periodEndDate - tempDate) / (1000 * 60 * 60 * 24)) + 1;
-                        
-                        // Calculate interest for these days
-                        const dailyRate = ratePeriod.annualRate / 360; // Using 365 days per year
-                        const interestAmount = outstanding * dailyRate * days;
+                        // Calculate days in this period (inclusive)
+                        const msPerDay = 1000 * 60 * 60 * 24;
+                        const days = Math.floor((periodEndDate - tempDate) / msPerDay) + 1;
+                        if (days <= 0) {
+                            // nothing to calculate for this slice
+                            tempDate.setDate(tempDate.getDate() + 1);
+                            continue;
+                        }
+
+                        // Calculate simple interest for these days (bank days-product method):
+                        // rate per day = annualRate / 365
+                        // interestAmount = outstanding * annualRate * days / 365
+                        const interestAmount = outstanding * ratePeriod.annualRate * (days / 365);
                         periodInterest += interestAmount;
+
+                        // Update principal for next period by adding the interest (previous principal + previous interest)
+                        outstanding += interestAmount;
                         
                         // Add to breakdown
                         periodBreakdown.push({
@@ -931,8 +941,7 @@
                         breakdown: periodBreakdown
                     });
                     
-                    // Update outstanding balance with interest
-                    outstanding += periodInterest;
+                    // outstanding already updated during compounding inside the loop
                 }
                 
                 // Calculate total repaid
@@ -1058,7 +1067,6 @@
     </script>
 </body>
 </html>
-
 
 
 
